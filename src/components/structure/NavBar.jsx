@@ -10,23 +10,24 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import Logo from "../images/Logo";
-import { useAppStore } from "../AppStore";
+import Logo from "../../images/Logo";
+import { useAppStore } from "../../AppStore";
+import { AuthData } from "../../auth/AuthWrapper";
 
 const AppBar = styled(
-  MuiAppBar,
-  {}
+  MuiAppBar
 )(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
 }));
 
 export default function Navbar() {
+  const {user, logout } = AuthData();
   const [anchorEl, setAnchorEl] = useState(null);
   const updateOpen = useAppStore((state) => state.updateOpen);
   const dopen = useAppStore((state) => state.dopen);
 
   const navigate = useNavigate()
-
+console.log("user",user.name)
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -51,6 +52,9 @@ export default function Navbar() {
           </IconButton>
           <Typography component="div" sx={{ flexGrow: 1 }}>
             <Logo />
+          </Typography>
+          <Typography>
+            {user.name}
           </Typography>
               <IconButton
                 size="large"
@@ -82,7 +86,7 @@ export default function Navbar() {
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={()=>{navigate("/")}}>Çıxış et</MenuItem>
+                <MenuItem onClick={logout}>Çıxış et</MenuItem>
               </Menu>
         </Toolbar>
       </AppBar>

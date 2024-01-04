@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
-import EditableDataGrid from '../components/EditableTabel';
-import Loading from "../components/Loading";
+import EditableDataGrid from '../../components/EditableTabel';
+import Loading from "../../components/Loading";
 import { useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Swal from 'sweetalert2';
@@ -12,7 +12,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL
 
 
 
-const Expense = () => {
+const Income = () => {
     const { id } = useParams()
     const [row, setRow] = useState([])
     const [loading, setLoading] = useState(false);
@@ -26,13 +26,13 @@ const Expense = () => {
         username: '',
     })
 
-    
 
+    
 
     const getData = async () => {
         try {
             setLoading(true);
-            let response = await axios(`${BASE_URL}/expense`);
+            let response = await axios(`${BASE_URL}/income`);
             setRow(response.data.data)
         } catch (error) {
             Swal.fire({
@@ -62,20 +62,20 @@ const Expense = () => {
         {
             field: 'amount',
             headerName: 'amount',
-            width: 50,
+            width: 100,
             editable: true,
         },
         {
-            field: 'date',
-            headerName: 'date',
-            width: 110,
-            editable: true,
-        },
-        {
-            field: 'expenseDestination',
-            headerName: 'expenseDestination',
+            field: 'incomeSource',
+            headerName: 'incomeSource',
             width: 150,
             editable: true,
+        },
+        {
+            field: 'username',
+            headerName: 'username',
+            width: 150,
+            editable: false,
         },
         {
             field: 'delete',
@@ -104,7 +104,6 @@ const Expense = () => {
                     onClick={() => handleUpdate(params.id)}
                 >
                     Update
-
                 </Button>
             ),
         },
@@ -121,7 +120,7 @@ const Expense = () => {
             });
 
             if (result.isConfirmed) {
-                const response = await axios.put(`${BASE_URL}/expense/${id}`, updatedRow);
+                const response = await axios.put(`${BASE_URL}/income/${id}`, updatedRow);
                 Swal.fire("Saved!", "", "success");
             } else if (result.isDenied) {
                 Swal.fire("Changes are not saved", "", "info");
@@ -154,7 +153,7 @@ const Expense = () => {
             cancelButtonText: "xeyir, geri qayıt"
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`${BASE_URL}/expense/${id}`).then(resp => {
+                axios.delete(`${BASE_URL}/income/${id}`).then(resp => {
                     setRow(prevData => prevData.filter(item => item.id !== id));
                     Swal.fire({
                         title: "Silindi!",
@@ -175,11 +174,13 @@ const Expense = () => {
     };
 
   return (
-    <> {
-        loading ? <Loading /> : <EditableDataGrid rows={row} columns={column} processRowUpdate={processRowUpdate} />
-   }
+    <>
+        {
+             loading ? <Loading /> : <EditableDataGrid rows={row} columns={column} processRowUpdate={processRowUpdate} />
+        }
+        
     </>
   )
 }
 
-export default Expense
+export default Income

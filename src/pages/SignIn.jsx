@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -8,41 +8,56 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useReducer, useState } from "react";
+import { AuthData } from '../auth/AuthWrapper';
+import BackgroundImage from '../images/BackgroundImage ';
 
-// TODO remove, this demo shouldn't need to reset the theme.
+
+
+
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+  const { login } = AuthData();
+  // const [formData, setFormData] = useReducer(
+  //   (formData, newItem) => {
+  //     return { ...formData, ...newItem };
+  //   },
+  //   { userName: "", password: "" }
+  // );
+  const [formData, setFormData] = useState({
+    userName: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const doLogin = async () => {
+    try {
+      await login(formData.userName, formData.password);
+    } catch (error) {
+      setErrorMessage(error);
+    }
   };
 
-  const navigate = useNavigate()
+  const handleSubmit = (event) => {
+    event.preventDefault();
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
-          sx={{
-            backgroundImage: 'url(https://opulencecharters.com/wp-content/uploads/2023/08/pexels-cottonbro-studio-4606397-min.webp)',
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: (t) =>
-              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
+       <BackgroundImage/>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
@@ -62,10 +77,12 @@ export default function SignIn() {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
+                id="userName"
                 label="İstifadəçi adı"
-                name="email"
-                autoComplete="email"
+                name="userName"
+                autoComplete="userName"
+                value={formData.userName}
+                onChange={handleChange}
                 autoFocus
               />
               <TextField
@@ -77,16 +94,19 @@ export default function SignIn() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={formData.password}
+                onChange={handleChange}
               />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={()=> {navigate("/home")}}
+                onClick={doLogin}
               >
                 Daxil ol
               </Button>
+              {errorMessage ? <div className="error">{errorMessage}</div> : null}
             </Box>
           </Box>
         </Grid>

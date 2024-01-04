@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomTabPanel from "../components/CustomTabPanel";
+import CustomTabPanel from "../../layout/Addinformation/CustomTabPanel";
 import DeleteIcon from '@mui/icons-material/Delete';
-import DataTable from "../components/DataTable";
-import SideNav from "../components/SideNav";
-import Loading from "../components/Loading";
-import Navbar from "../components/NavBar";
+import EditableDataGrid from "../../components/EditableTabel";
+import SideNav from "../../components/structure/SideNav";
+import Loading from "../../components/Loading";
+import Navbar from "../../components/structure/NavBar";
+import Total from "../../layout/Addinformation/Total";
 import axios from "axios";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -35,17 +36,6 @@ const Hesab = () => {
     const [columns, setColumns] = useState([]);
     const [id, setId] = useState()
 
-    const [updatedRow, setUpdatedRow] = useState({
-        id: id,
-        description: '',
-        amount: '',
-        incomeSource: '',
-        username: '',
-    })
-
-
-
-
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -68,7 +58,7 @@ const Hesab = () => {
         }
     };
 
-    let handleDelete = function (id, endpoint) {
+    const handleDelete =  (id, endpoint) =>{
         Swal.fire({
             title: "Əminsiniz?",
             text: "Əgər bu məlumatı silsəniz, bir daha geri qaytara bilməyəcəksiniz!",
@@ -100,37 +90,6 @@ const Hesab = () => {
         });
     };
 
-
-
-    const handleUpdate = async (rowid) => {
-        setId(rowid)
-
-        try {
-            const result = await Swal.fire({
-                title: "Dəyişiklikləri yadda saxlamaq istəyirsiniz?",
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: "Save",
-                denyButtonText: `Don't save`
-            });
-
-            if (result.isConfirmed) {
-                const response = await axios.put(`${BASE_URL}/income/${id}`, updatedRow);
-                console.log(response.data);
-                Swal.fire("Saved!", "", "success");
-            } else if (result.isDenied) {
-                Swal.fire("Changes are not saved", "", "info");
-            }
-        } catch (error) {
-            console.error("Error updating data:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Xəta",
-                text: `Məlumat güncəllənmədı. Xəta: ${error.message}`,
-            });
-        }
-    };
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -147,25 +106,25 @@ const Hesab = () => {
                             field: 'description',
                             headerName: 'description',
                             width: 150,
-                            editable: true,
+                            editable: false,
                         },
                         {
                             field: 'amount',
                             headerName: 'amount',
                             width: 100,
-                            editable: true,
+                            editable: false,
                         },
                         {
                             field: 'incomeSource',
                             headerName: 'incomeSource',
                             width: 150,
-                            editable: true,
+                            editable: false,
                         },
                         {
                             field: 'username',
                             headerName: 'username',
                             width: 150,
-                            editable: true,
+                            editable: false,
                         },
                         {
                             field: 'delete',
@@ -186,14 +145,14 @@ const Hesab = () => {
                             field: 'update',
                             headerName: 'Update',
                             sortable: false,
-                            width: 100,
+                            width: 250,
                             renderCell: (params) => (
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => handleUpdate(params.id)}
+                                    onClick={() => navigate(`/update-income/${params.id}`)}
                                 >
-                                    Update
+                                    Yeniləmək üçün keçid et
                                 </Button>
                             ),
                         },
@@ -207,25 +166,25 @@ const Hesab = () => {
                             field: 'description',
                             headerName: 'description',
                             width: 150,
-                            editable: true,
+                            editable: false,
                         },
                         {
                             field: 'amount',
                             headerName: 'amount',
                             width: 50,
-                            editable: true,
+                            editable: false,
                         },
                         {
                             field: 'date',
                             headerName: 'date',
                             width: 110,
-                            editable: true,
+                            editable: false,
                         },
                         {
                             field: 'expenseDestination',
                             headerName: 'expenseDestination',
                             width: 150,
-                            editable: true,
+                            editable: false,
                         },
                         {
                             field: 'delete',
@@ -246,14 +205,14 @@ const Hesab = () => {
                             field: 'update',
                             headerName: 'Update',
                             sortable: false,
-                            width: 100,
+                            width: 250,
                             renderCell: (params) => (
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => handleUpdate(params.id)}
+                                    onClick={() => navigate(`/update-expense/${params.id}`)}
                                 >
-                                    Update
+                                    Yeniləmək üçün keçid et
 
                                 </Button>
                             ),
@@ -268,19 +227,19 @@ const Hesab = () => {
                             field: 'description',
                             headerName: 'description',
                             width: 150,
-                            editable: true,
+                            editable: false,
                         },
                         {
                             field: 'amount',
                             headerName: 'amount',
                             width: 100,
-                            editable: true,
+                            editable: false,
                         },
                         {
                             field: 'debtSource',
                             headerName: 'debtSource',
                             width: 110,
-                            editable: true,
+                            editable: false,
                         },
                         {
                             field: 'delete',
@@ -301,14 +260,14 @@ const Hesab = () => {
                             field: 'update',
                             headerName: 'Update',
                             sortable: false,
-                            width: 100,
+                            width: 250,
                             renderCell: (params) => (
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => handleUpdate(params.id)}
+                                    onClick={() => navigate(`/update-debt/${params.id}`)}
                                 >
-                                    Update
+                                    Yeniləmək üçün keçid et
 
                                 </Button>
                             ),
@@ -325,21 +284,14 @@ const Hesab = () => {
         fetchData();
     }, [value,]);
 
-
-
-    const processRowUpdate = (newRow) => {
-        const updatedRow = { ...newRow, isNew: true };
-        setUpdatedRow(updatedRow)
-        return updatedRow;
-    };
-
     return (
         <>
             <Navbar />
             <Box sx={{ display: "flex" }}>
                 <SideNav />
                 <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                    <h1>Maliyyə hesabatları</h1>
+                    <h1>Maliyyə hesabatları №2</h1>
+                    <Total />
                     <Button
                         className="buttonNav"
                         onClick={() => {
@@ -359,17 +311,17 @@ const Hesab = () => {
                         </Box>
                         <CustomTabPanel sx={{ heigth: "10px" }} value={value} index={0}>
                             {
-                                loading ? <Loading /> : <DataTable columns={columns} rows={data} processRowUpdate={processRowUpdate} />
+                                loading ? <Loading /> : <EditableDataGrid columns={columns} rows={data} />
                             }
                         </CustomTabPanel>
                         <CustomTabPanel value={value} index={1}>
                             {
-                                loading ? <Loading /> : <DataTable columns={columns} rows={data} processRowUpdate={processRowUpdate} />
+                                loading ? <Loading /> : <EditableDataGrid columns={columns} rows={data} />
                             }
                         </CustomTabPanel>
                         <CustomTabPanel value={value} index={2}>
                             {
-                                loading ? <Loading /> : <DataTable columns={columns} rows={data} processRowUpdate={processRowUpdate} />
+                                loading ? <Loading /> : <EditableDataGrid columns={columns} rows={data} />
                             }
                         </CustomTabPanel>
                     </Box>

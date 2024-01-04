@@ -1,6 +1,6 @@
-import SideNav from "../components/SideNav";
+import SideNav from "../components/structure/SideNav";
 import Box from "@mui/material/Box";
-import Navbar from "../components/NavBar";
+import Navbar from "../components/structure/NavBar";
 
 const Settings = () => {
   return (

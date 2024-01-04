@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
-import EditableDataGrid from '../components/EditableTabel';
-import Loading from "../components/Loading";
+import EditableDataGrid from '../../components/EditableTabel';
+import Loading from "../../components/Loading";
 import { useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Swal from 'sweetalert2';
@@ -12,7 +12,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL
 
 
 
-const Income = () => {
+const Debt = () => {
     const { id } = useParams()
     const [row, setRow] = useState([])
     const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ const Income = () => {
     const getData = async () => {
         try {
             setLoading(true);
-            let response = await axios(`${BASE_URL}/income`);
+            let response = await axios(`${BASE_URL}/debt`);
             setRow(response.data.data)
         } catch (error) {
             Swal.fire({
@@ -39,7 +39,7 @@ const Income = () => {
                 title: `Oopsaaa...${error.name}`,
                 text: `${error.message}`,
             });
-        }finally {
+        } finally {
             setLoading(false);
         }
     }
@@ -65,16 +65,10 @@ const Income = () => {
             editable: true,
         },
         {
-            field: 'incomeSource',
-            headerName: 'incomeSource',
-            width: 150,
-            editable: true,
-        },
-        {
-            field: 'username',
-            headerName: 'username',
-            width: 150,
-            editable: true,
+            field: 'debtSource',
+            headerName: 'debtSource',
+            width: 110,
+            editable: false,
         },
         {
             field: 'delete',
@@ -103,11 +97,12 @@ const Income = () => {
                     onClick={() => handleUpdate(params.id)}
                 >
                     Update
+
                 </Button>
             ),
         },
     ];
-    
+
     const handleUpdate = async (id) => {
         try {
             const result = await Swal.fire({
@@ -119,8 +114,8 @@ const Income = () => {
             });
 
             if (result.isConfirmed) {
-                const response = await axios.put(`${BASE_URL}/income/${id}`, updatedRow);
-                Swal.fire("Saved!", "", "success");
+                const response = await axios.put(`${BASE_URL}/debt/${id}`, updatedRow);
+                Swal.fire("Updated!", "", "success");
             } else if (result.isDenied) {
                 Swal.fire("Changes are not saved", "", "info");
             }
@@ -152,7 +147,7 @@ const Income = () => {
             cancelButtonText: "xeyir, geri qayıt"
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`${BASE_URL}/income/${id}`).then(resp => {
+                axios.delete(`${BASE_URL}/debt/${id}`).then(resp => {
                     setRow(prevData => prevData.filter(item => item.id !== id));
                     Swal.fire({
                         title: "Silindi!",
@@ -172,14 +167,13 @@ const Income = () => {
         });
     };
 
-  return (
-    <>
-        {
-             loading ? <Loading /> : <EditableDataGrid rows={row} columns={column} processRowUpdate={processRowUpdate} />
-        }
-        
-    </>
-  )
+    return (
+        <>
+            {
+                loading ? <Loading /> : <EditableDataGrid rows={row} columns={column} processRowUpdate={processRowUpdate} />
+            }
+        </>
+    )
 }
 
-export default Income
+export default Debt

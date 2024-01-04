@@ -12,7 +12,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useNavigate } from "react-router-dom";
-import { useAppStore } from "../AppStore";
+import { useAppStore } from "../../AppStore";
 import LocalTaxiIcon from '@mui/icons-material/LocalTaxi';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import HomeIcon from '@mui/icons-material/Home';
@@ -87,10 +87,9 @@ export default function SideNav() {
             )}
           </IconButton>
         </DrawerHeader>
-
         <Divider />
         <List>
-          <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/home")}}>
+          <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/hesab")}}>
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -106,9 +105,30 @@ export default function SideNav() {
                   color: "orange"
                 }}
               >
-                <HomeIcon />
+                <AccountBalanceIcon />
               </ListItemIcon>
-              <ListItemText primary="Əsas səhifə" sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary="Maliyyə  №1" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/hesab-2")}}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                  color: "orange"
+                }}
+              >
+                <AccountBalanceIcon />
+              </ListItemIcon>
+              <ListItemText primary="Maliyyə  №2" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/taxiPark")}}>
@@ -132,7 +152,7 @@ export default function SideNav() {
               <ListItemText primary="Taxi Park" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/invoice")}}>
+          <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/e-invoice")}}>
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -150,28 +170,7 @@ export default function SideNav() {
               >
                 <ReceiptLongIcon />
               </ListItemIcon>
-              <ListItemText primary="Qaimə" sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/hesab")}}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                  color: "orange"
-                }}
-              >
-                <AccountBalanceIcon />
-              </ListItemIcon>
-              <ListItemText primary="Maliyyə hesabatları" sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary="E-invoice" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>

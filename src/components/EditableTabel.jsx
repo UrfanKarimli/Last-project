@@ -4,6 +4,16 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from "react-router-dom";
 
 
+
+const CustomNoRowsOverlay = () => {
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+            <p>Məlumat yoxdur</p>
+        </div>
+    );
+};
+
+
 const EditableDataGrid = ({ columns, rows, url, processRowUpdate }) => {
     const navigate = useNavigate();
     const idValues = rows.map(item => item.id);
@@ -25,6 +35,9 @@ const EditableDataGrid = ({ columns, rows, url, processRowUpdate }) => {
                                 pageSize: 5,
                             },
                         },
+                    }}
+                    slots={{
+                        noRowsOverlay: CustomNoRowsOverlay,
                     }}
                     onCellClick={(params) => {
                         if (typeof url !== "undefined") {

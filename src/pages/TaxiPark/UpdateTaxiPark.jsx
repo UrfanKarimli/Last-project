@@ -1,62 +1,96 @@
-import React, { useState } from "react";
-import Navbar from "../components/NavBar";
-import SideNav from "../components/SideNav";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate, useMatch } from "react-router-dom";
+import SideNav from "../../components/structure/SideNav";
+import Navbar from "../../components/structure/NavBar";
 import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
-const NewTaxiPark = () => {
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+const UpdateTaxiPark = () => {
   const navigate = useNavigate();
-  const [taxiParkInfo, setTaxiParkInfo] = useState({
-    taxiParkName: "",
+  const [data, setData] = useState({
+    additionalFee: "",
+    additionalFeeDescription: "",
+    driverBankAccountFeePercentage: "",
+    driverCardFeePercentage: "",
+    fleetBankAccountFeePercentage: "",
+    fleetCardFeePercentage: "",
+    id: "",
     legalName: "",
-    voen: "",
-    bankAccountDriver: "",
-    cardDriver: "",
-    bankAccountFleet: "",
-    cardFleet: "",
-    server: "",
-    fee: "",
-    description: "",
+    serverFee: "",
+    taxNumber: "",
+    taxiParkName: "",
   });
 
-  const handleInputChange = (event, fieldName) => {
-    setTaxiParkInfo({
-      ...taxiParkInfo,
-      [fieldName]: event.target.value,
+  const match = useMatch("/updateTaxiPark/:id");
+  const taxiParkId = match?.params.id ?? -1;
+
+  useEffect(() => {
+    if (taxiParkId !== -1) {
+      getTaxiParkById(taxiParkId);
+    }
+  }, [taxiParkId]);
+
+  const getTaxiParkById = async (id) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/taxiPark`);
+      const result = await response.data.data;
+      const taxiData = result.filter((item) => item.id === id);
+      if (taxiData) {
+        setData(taxiData[0]);
+      }
+    } catch (error) {
+      console.error("error", error);
+    }
+  };
+
+  const handleTaxiParkChange = (e) => {
+    const { name, value } = e.target;
+    setData({
+      ...data,
+      [name]: value,
     });
   };
 
-  const isFormFilled = () => {
-    return (
-      taxiParkInfo.taxiParkName !== "" &&
-      taxiParkInfo.legalName !== "" &&
-      taxiParkInfo.voen !== "" &&
-      taxiParkInfo.bankAccountDriver !== "" &&
-      taxiParkInfo.cardDriver !== "" &&
-      taxiParkInfo.bankAccountFleet !== "" &&
-      taxiParkInfo.cardFleet !== "" &&
-      taxiParkInfo.server !== "" &&
-      taxiParkInfo.fee !== "" &&
-      taxiParkInfo.description !== ""
-    );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log(taxiParkId);
+      await axios.put(`${BASE_URL}/taxiPark/${taxiParkId}`, data);
+      Swal.fire({
+        icon: "success",
+        title: "Məlumat uğurla yeniləndi",
+        timer: 1000,
+      });
+      navigate("/taxiPark");
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Xəta",
+      });
+    }
   };
+
   return (
     <>
       <Navbar />
       <Box sx={{ display: "flex" }}>
         <SideNav />
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <h1>Taxi Park əlavə et</h1>
+          <h1>Taxi Park Update</h1>
           <Box>
-            <div className="parent">
+            <form onSubmit={handleSubmit}>
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   gap: 10,
                 }}
-                className="div1"
               >
                 <h1
                   style={{
@@ -70,34 +104,32 @@ const NewTaxiPark = () => {
                 </h1>
                 <div>
                   <label htmlFor="">Taxi Park Adı: </label>
-                  <input
-                    className="input"
+                  <TextField
                     type="text"
-                    value={taxiParkInfo.taxiParkName}
-                    onChange={(event) =>
-                      handleInputChange(event, "taxiParkName")
-                    }
+                    name="taxiParkName"
                     placeholder="Taxi Park adı yaz..."
+                    onChange={handleTaxiParkChange}
+                    value={data.taxiParkName}
                   />
                 </div>
                 <div>
-                  <label htmlFor="">Hüquqi adı: </label>
-                  <input
-                    className="input"
+                  <label htmlFor="">Hüquqi adı:</label>
+                  <TextField
                     type="text"
-                    value={taxiParkInfo.legalName}
-                    onChange={(event) => handleInputChange(event, "legalName")}
+                    name="legalName"
                     placeholder="Hüquqi adı yaz..."
+                    onChange={handleTaxiParkChange}
+                    value={data.legalName}
                   />
                 </div>
                 <div>
                   <label htmlFor="">VÖEN: </label>
-                  <input
-                    className="input"
+                  <TextField
                     type="text"
-                    value={taxiParkInfo.voen}
-                    onChange={(event) => handleInputChange(event, "voen")}
+                    name="taxNumber"
                     placeholder="VÖEN yaz..."
+                    onChange={handleTaxiParkChange}
+                    value={data.taxNumber}
                   />
                 </div>
               </div>
@@ -107,7 +139,6 @@ const NewTaxiPark = () => {
                   flexDirection: "column",
                   gap: 10,
                 }}
-                className="div2"
               >
                 <h1
                   style={{
@@ -121,24 +152,22 @@ const NewTaxiPark = () => {
                 </h1>
                 <div>
                   <label htmlFor="">Bank hesabı üzrə (VÖEN-li): </label>
-                  <input
-                    className="input"
+                  <TextField
                     type="text"
-                    value={taxiParkInfo.bankAccountDriver}
-                    onChange={(event) =>
-                      handleInputChange(event, "bankAccountDriver")
-                    }
+                    name="driverBankAccountFeePercentage"
                     placeholder="0.5%, min 0.25 AZN"
+                    onChange={handleTaxiParkChange}
+                    value={data.driverBankAccountFeePercentage}
                   />
                 </div>
                 <div>
                   <label htmlFor="">Avtomatik kart üzrə (VÖEN-siz): </label>
-                  <input
-                    className="input"
+                  <TextField
                     type="text"
-                    value={taxiParkInfo.cardDriver}
-                    onChange={(event) => handleInputChange(event, "cardDriver")}
+                    name="driverCardFeePercentage"
                     placeholder="1.9%, min 0.5 AZN"
+                    onChange={handleTaxiParkChange}
+                    value={data.driverCardFeePercentage}
                   />
                 </div>
               </div>
@@ -148,7 +177,6 @@ const NewTaxiPark = () => {
                   flexDirection: "column",
                   gap: "24px",
                 }}
-                className="div3"
               >
                 <h1
                   style={{
@@ -162,24 +190,22 @@ const NewTaxiPark = () => {
                 </h1>
                 <div>
                   <label htmlFor="">Bank hesabı üzrə (VÖEN-li): </label>
-                  <input
-                    className="input"
+                  <TextField
                     type="text"
-                    value={taxiParkInfo.bankAccountFleet}
-                    onChange={(event) =>
-                      handleInputChange(event, "bankAccountFleet")
-                    }
+                    name="fleetBankAccountFeePercentage"
                     placeholder="0.25%"
+                    onChange={handleTaxiParkChange}
+                    value={data.fleetBankAccountFeePercentage}
                   />
                 </div>
                 <div>
                   <label htmlFor="">Avtomatik kart üzrə (VÖEN-siz): </label>
-                  <input
-                    className="input"
+                  <TextField
                     type="text"
-                    value={taxiParkInfo.cardFleet}
-                    onChange={(event) => handleInputChange(event, "cardFleet")}
+                    name="fleetCardFeePercentage"
                     placeholder="2%"
+                    onChange={handleTaxiParkChange}
+                    value={data.fleetCardFeePercentage}
                   />
                 </div>
               </div>
@@ -189,7 +215,6 @@ const NewTaxiPark = () => {
                   flexDirection: "column",
                   gap: 10,
                 }}
-                className="div4"
               >
                 <h1
                   style={{
@@ -202,12 +227,12 @@ const NewTaxiPark = () => {
                   Server Xidmət haqqı (AZN)
                 </h1>
                 <div>
-                  <input
-                    className="input"
+                  <TextField
                     type="number"
-                    value={taxiParkInfo.server}
-                    onChange={(event) => handleInputChange(event, "server")}
+                    name="serverFee"
                     placeholder="70"
+                    onChange={handleTaxiParkChange}
+                    value={data.serverFee}
                   />
                 </div>
               </div>
@@ -217,7 +242,6 @@ const NewTaxiPark = () => {
                   flexDirection: "column",
                   gap: 10,
                 }}
-                className="div5"
               >
                 <h1
                   style={{
@@ -231,44 +255,36 @@ const NewTaxiPark = () => {
                 </h1>
                 <div>
                   <label htmlFor="">Fee: </label>
-                  <input
-                    className="input"
+                  <TextField
                     type="number"
-                    value={taxiParkInfo.fee}
-                    onChange={(event) => handleInputChange(event, "fee")}
+                    name="additionalFee"
                     placeholder="500"
+                    onChange={handleTaxiParkChange}
+                    value={data.additionalFee}
                   />
                 </div>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <label htmlFor="">Təsvir: </label>
-                  <textarea
+                  <TextField
+                    multiline
                     style={{ height: 60 }}
-                    className="input"
-                    value={taxiParkInfo.description}
-                    onChange={(event) =>
-                      handleInputChange(event, "description")
-                    }
+                    name="additionalFeeDescription"
                     type="text"
                     placeholder="Təsvir ver..."
+                    onChange={handleTaxiParkChange}
+                    value={data.additionalFeeDescription}
                   />
                 </div>
               </div>
-            </div>
+              <Button className="buttonTaxi" type="submit" variant="contained">
+                Məlumatı yenilə
+              </Button>
+            </form>
           </Box>
-          <Button
-            className="buttonTaxi"
-            variant="contained"
-            disabled={!isFormFilled()}
-            onClick={() => {
-              navigate("/taxiPark");
-            }}
-          >
-            Taxi Park əlavə et
-          </Button>
         </Box>
       </Box>
     </>
   );
 };
 
-export default NewTaxiPark;
+export default UpdateTaxiPark;

@@ -1,9 +1,9 @@
-import Sidenav from "../components/SideNav";
+import Sidenav from "../../components/structure/SideNav";
 import React, { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom"
 import Box from "@mui/material/Box";
-import Navbar from "../components/NavBar";
+import Navbar from "../../components/structure/NavBar";
 import Button from "@mui/material/Button";
 import Swal from 'sweetalert2';
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -14,9 +14,7 @@ const TestAbout = () => {
 
     const [selectedOption, setSelectedOption] = useState(0);
     const [open, setOpen] = useState(false);
-    // const [resUrl, setResUrl] = useState(`${BASE_URL}/income`);
 
-    // console.log("---------",resUrl);
     const [income, setIncome] = useState({
         id: Date.now(),
         description: '',
@@ -71,33 +69,26 @@ const TestAbout = () => {
                 default:
                     throw new Error("Seçilmiş əməliyyat mövcud deyil.");
             }
-
             const response = await axiosInstance.post(`${BASE_URL}${endpoint}`, data);
-            // setResUrl(response.config.url); 
-            // sessionStorage.setItem('resUrl', response.config.url);
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Məlumat uğurla əlavə edildi",
                 text: `${response.data.message}`,
                 showConfirmButton: false,
-                timer: 2500
+                timer: 1500
             });
-
             navigate("/hesab");
         } catch (error) {
             console.error(error);
-            Swal.fire({
-                position: "top-end",
+            Swal.fire({               
                 icon: "error",
                 title: "Oops...",
                 text: error.message,
                 showConfirmButton: false,
-                timer: 3000
+                timer: 2000
             });
         }
     };
-
 
 
     const handleIncomeChange = (e) => {
@@ -137,9 +128,6 @@ const TestAbout = () => {
         setOpen(!open);
     };
  
-    
-    // getLastUrl(resUrl)
-
 
     return (
         <>
@@ -173,7 +161,6 @@ const TestAbout = () => {
                                                 id="income-description"
                                                 type="text"
                                                 name="description"
-                                                // value={income.description}
                                                 onChange={handleIncomeChange}
                                             />
                                         </Box>
@@ -184,7 +171,6 @@ const TestAbout = () => {
                                                 id="income-amount"
                                                 type="number"
                                                 name="amount"
-                                                // value={income.amount}
                                                 onChange={handleIncomeChange}
                                             />
                                         </Box>
@@ -195,7 +181,6 @@ const TestAbout = () => {
                                                 id="income-source"
                                                 type="text"
                                                 name="incomeSource"
-                                                // value={income.source}
                                                 onChange={handleIncomeChange}
                                             />
                                         </Box>
@@ -206,7 +191,6 @@ const TestAbout = () => {
                                                 id="income-username"
                                                 type="text"
                                                 name="username"
-                                                // value={income.username}
                                                 onChange={handleIncomeChange}
                                             />
                                         </Box>

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate, } from "react-router-dom";
-import CustomTabPanel from "../components/CustomTabPanel";
-import Income from "../components/Income";
-import Expense from "../components/Expense";
-import Debt from "../components/Debt";
-import SideNav from "../components/SideNav";
-import Navbar from "../components/NavBar";
+import CustomTabPanel from "../../layout/Addinformation/CustomTabPanel";
+import Income from "../../layout/Addinformation/Income";
+import Expense from "../../layout/Addinformation/Expense";
+import Debt from "../../layout/Addinformation/Debt";
+import SideNav from "../../components/structure/SideNav";
+import Navbar from "../../components/structure/NavBar";
+import Total from "../../layout/Addinformation/Total";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -32,6 +33,7 @@ const MyHesab = () => {
         setValue(newValue);
     };
 
+    
 
     return (
         <>
@@ -39,7 +41,8 @@ const MyHesab = () => {
             <Box sx={{ display: "flex" }}>
                 <SideNav />
                 <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                    <h1>Maliyyə hesabatları</h1>
+                    <h1>Maliyyə hesabatları №1</h1>
+                    <Total />
                     <Button
                         className="buttonNav"
                         onClick={() => {
